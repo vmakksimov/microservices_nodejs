@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "dist"  // Specify output directory
+  },
+  "include": ["src/**/*.ts"],  // Include only src files to compile
+  "exclude": ["node_modules", "**/*.test.ts"]
+}
