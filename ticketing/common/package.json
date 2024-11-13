@@ -1,0 +1,22 @@
+{
+  "name": "@vmmtickets/common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "files": [
+    "build/**/*"
+  ],
+  "scripts": {
+    "clean": "del-cli ./build/*",
+    "build": "npm run clean && tsc",
+    "pub": "git add . && git commit -m \"build\" && npm version patch && npm run build && npm publish"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "del-cli": "^6.0.0",
+    "typescript": "^5.6.3"
+  }
+}
