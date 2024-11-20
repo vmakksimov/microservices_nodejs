@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kibana-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "session"
+    nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+spec:
+  ingressClassName: nginx  # Ensure this matches your IngressClass name
+  rules:
+    - host: kibana.ticketing.site
+      http:
+        paths:
+          - path: /  # This will route to the Kibana service
+            pathType: Prefix
+            backend:
+              service:
+                name: kibana  # Ensure this is the name of your Kibana service
+                port:
+                  number: 5601  # Default Kibana port
