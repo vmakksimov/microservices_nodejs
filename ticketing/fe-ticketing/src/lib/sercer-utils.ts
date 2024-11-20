@@ -14,6 +14,8 @@ export async function serverFetchCurrentUser() {
             cache: 'no-store'
         });
 
+        console.log('response with fetch', response)
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

@@ -1,10 +1,11 @@
 import express, {Request, Response} from 'express';
 import jwt from 'jsonwebtoken';
 import {body} from 'express-validator';
-import { User } from '../models/user';
-import { BadRequestError } from '../errors/bad-request-error';
-import { validateRequest } from '../middlewares/validate-request';
-
+import { User, UserAttr } from '../models/user';
+import { BadRequestError } from '@vmmtickets/common';
+import { validateRequest } from '@vmmtickets/common';
+import { publishUserCreatedEvent } from '../../kafka';
+import {indexTicket} from '../../elasticsearch/index'
 const router = express.Router();
 
 router.post('/api/users/signup', [
@@ -36,6 +37,9 @@ async (req: Request, res: Response)  => {
     req.session = {
         jwt: userJwt
     }
+    await indexTicket(user);
+     // Publish user created event to Kafka
+    await publishUserCreatedEvent(user);
  
     res.status(201).send(user);
 });

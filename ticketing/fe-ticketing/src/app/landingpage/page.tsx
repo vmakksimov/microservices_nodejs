@@ -19,8 +19,10 @@ const LandingPage = async () => {
 };
 
 async function fetchCurrentUser(){
+    console.log("inside fetch current user")
     if (typeof window === 'undefined'){
         const currentUser = await serverFetchCurrentUser();
+        console.log("current user", currentUser)
         return currentUser;
     } else {
         const response = await axiosInstance.get('/api/users/currentuser');

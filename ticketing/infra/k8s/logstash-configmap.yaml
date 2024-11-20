@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+  namespace: default  # Add your namespace if necessary
+data:
+  logstash.conf: |
+    input {
+      file {
+        path => "/mnt/tickets/logs/*.log"  # Path to logs (ensure this matches the mount in your Logstash container)
+        start_position => "beginning"
+        sincedb_path => "/dev/null"
+      }
+    }
+
+    filter {
+      json {
+        source => "message"  # Assuming your logs are JSON-formatted
+      }
+    }
+
+    output {
+      elasticsearch {
+        hosts => ["http://elasticsearch:9200"]  # Replace with your Elasticsearch service URL
+        index => "tickets-logs-%{+YYYY.MM.dd}"  # Log index with a date format
+      }
+    }

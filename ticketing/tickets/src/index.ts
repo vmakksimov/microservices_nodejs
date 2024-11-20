@@ -3,13 +3,12 @@ import 'express-async-errors';
 import { json } from 'body-parser';
 import mongoose from 'mongoose';
 import cookieSession from 'cookie-session';
-import { currentUserRouter } from './routes/current-user';
-import { signinRouter } from './routes/signin';
-import { signoutRouter } from './routes/signout';
-import { signupRouter } from './routes/signup';
-import { errorHandler } from '@vmmtickets/common';
-import { NotFoundError } from '@vmmtickets/common';
-
+import { errorHandler, NotFoundError, currentUser } from '@vmmtickets/common';
+import { showTicketRouter } from './routes/show';
+import { createTicketRouter } from './routes/new';
+import { indexTicketRouter } from './routes';
+import { updateTicketRouter } from './routes/update';
+import {runConsumer} from '../kafka'
 const app = express();
 app.set('trust proxy', true)
 app.use(json());
@@ -20,11 +19,11 @@ app.use(
         httpOnly: true,
     })
 )
-app.use(currentUserRouter);
-app.use(signinRouter);
-app.use(signoutRouter);
-app.use(signupRouter);
-
+app.use(currentUser);
+app.use(createTicketRouter);
+app.use(showTicketRouter)
+app.use(indexTicketRouter)
+app.use(updateTicketRouter)
 app.all('*', async (req, res) => {
     throw new NotFoundError()
 })
@@ -35,7 +34,7 @@ const start = async () => {
         throw new Error('JWT_KEY must be defined');
     }
     if (!process.env.MONGO_URI) {
-        throw new Error('MONG_URI must be defined');
+        throw new Error('MONGO_URI must be defined');
     }
     try {
         await mongoose.connect(process.env.MONGO_URI);
@@ -43,8 +42,11 @@ const start = async () => {
     } catch (error) {
         console.log(error)
     }
+    
+    await runConsumer().catch(console.error);
 
     app.listen(3000, () => {
+        
         console.log('Listening on port 3000!!!!');
     })
 }

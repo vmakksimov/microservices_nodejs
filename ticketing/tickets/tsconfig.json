@@ -8,7 +8,7 @@
     "skipLibCheck": true,
     "outDir": "./dist"
   },
-  "include": ["src/**/*", "kafka"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }
  

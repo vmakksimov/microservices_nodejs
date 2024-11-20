@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash
+  template:
+    metadata:
+      labels:
+        app: logstash
+    spec:
+      containers:
+        - name: logstash
+          image: docker.elastic.co/logstash/logstash:8.12.0
+          ports:
+            - containerPort: 5044
+          volumeMounts:
+            # Mount the ConfigMap that contains the Logstash configuration file
+            - name: logstash-config
+              mountPath: /usr/share/logstash/pipeline/logstash.conf  # Mounting logstash.conf to the correct path inside the container
+              subPath: logstash.conf  # Ensuring only the file is mounted here, not the whole config map
+            # Mount the directory containing your ticket service logs
+            # - name: tickets-log-volume
+            #   mountPath: /mnt/tickets/logs  # Path where ticket logs are stored inside the container
+          env:
+            - name: "ELASTICSEARCH_HOSTS"
+              value: "http://elasticsearch:9200"  # Elasticsearch endpoint
+      volumes:
+        # Volume for the Logstash ConfigMap
+        - name: logstash-config
+          configMap:
+            name: logstash-config  # This refers to the ConfigMap containing logstash.conf
+        # Volume for the logs directory (change to your log directory path)
+        # - name: tickets-log-volume
+        #   persistentVolumeClaim:
+        #     claimName: tickets-log-pvc  # Adjust to the PVC or host path you're using for logs

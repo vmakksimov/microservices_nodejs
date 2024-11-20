@@ -1,7 +1,7 @@
 
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import { validateRequest } from '../middlewares/validate-request';
+import { validateRequest } from '@vmmtickets/common';
 const router = express.Router();
 
 router.post('/api/users/signout', (req: Request, res: Response) => {
